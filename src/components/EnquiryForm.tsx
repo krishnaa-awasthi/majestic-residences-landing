@@ -1,33 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Send } from "lucide-react";
+import { Send, X } from "lucide-react";
 
 const EnquiryForm = () => {
   const { toast } = useToast();
+  const [showPopup, setShowPopup] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     phone: "",
-    message: "",
-    unitType: "",
   });
+
+  useEffect(() => {
+    document.body.style.overflow = showPopup ? "hidden" : "auto";
+  }, [showPopup]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.phone) {
+
+    if (!formData.name || !formData.phone) {
       toast({
         title: "Required fields missing",
         description: "Please fill in all required fields.",
@@ -36,152 +29,97 @@ const EnquiryForm = () => {
       return;
     }
 
-    // Here you would typically send the data to your backend
     console.log("Form submitted:", formData);
-    
+
     toast({
       title: "Enquiry Submitted!",
       description: "Thank you for your interest. Our team will contact you soon.",
     });
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-      unitType: "",
-    });
+    setFormData({ name: "", phone: "" });
+    setShowPopup(false);
   };
 
-  return (
-    <section id="enquiry" className="py-20 bg-gradient-to-br from-accent/5 via-gold/5 to-accent/5 relative overflow-hidden">
-      {/* Decorative background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, hsl(var(--gold)) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
+  if (!showPopup) return null;
 
-      <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-4">
-            Get in Touch
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="relative bg-[#f8f1e7] rounded-2xl shadow-2xl w-full max-w-lg p-8 md:p-10 text-center animate-fade-in border border-[#d4af37]/40">
+        {/* Close Button */}
+        <button
+          onClick={() => setShowPopup(false)}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+        >
+          <X className="h-6 w-6" />
+        </button>
+
+        {/* Header Section */}
+        <div className="flex flex-col items-center justify-center mb-8">
+          <img
+            src="https://www.godrejperoperties.in/Majesty/assets/img/comman/logo-1.png"
+            alt="Godrej Majesty"
+            className="h-12 w-auto mb-3"
+          />
+          <p className="text-[13px] tracking-widest text-[#5a4632] uppercase font-medium">
+            SECTOR 12, GREATER NOIDA (W)
+          </p>
+
+          <h2 className="mt-6 text-[22px] tracking-[4px] font-semibold text-[#7a5a2f]">
+            ENQUIRE NOW!
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Schedule a site visit or request more information about Majestic Residences
+
+          <p className="text-[16px] font-semibold text-[#5a4632] mt-2">
+            Register Here & Avail{" "}
+            <span className="text-[#d40f0f] font-bold">Exclusive Offers!!</span>
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="max-w-2xl mx-auto bg-card p-8 md:p-12 rounded-2xl shadow-luxury"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label htmlFor="name" className="text-charcoal font-medium mb-2 block">
-                Name *
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Your full name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="email" className="text-charcoal font-medium mb-2 block">
-                Email *
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your.email@example.com"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="rounded-lg"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label htmlFor="phone" className="text-charcoal font-medium mb-2 block">
-                Phone *
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+91 98765 43210"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                className="rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="unitType" className="text-charcoal font-medium mb-2 block">
-                Preferred Unit Type
-              </Label>
-              <Select
-                value={formData.unitType}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, unitType: value })
-                }
-              >
-                <SelectTrigger className="rounded-lg">
-                  <SelectValue placeholder="Select unit type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3bhk">3 BHK</SelectItem>
-                  <SelectItem value="3bhk-study">3 BHK + Study</SelectItem>
-                  <SelectItem value="4bhk">4 BHK</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <Label htmlFor="message" className="text-charcoal font-medium mb-2 block">
-              Message
-            </Label>
-            <Textarea
-              id="message"
-              placeholder="Tell us about your requirements..."
-              value={formData.message}
-              onChange={(e) =>
-                setFormData({ ...formData, message: e.target.value })
-              }
-              className="rounded-lg min-h-[120px]"
+        {/* Form Section */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Name*"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
             />
           </div>
 
+          <div>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="Phone Number*"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              required
+              className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
+            />
+          </div>
+
+          <label className="text-[10px] text-gray-600 flex items-start gap-1 mt-1">
+            <input type="checkbox" className="mt-[3px]" required />
+            I consent to the privacy policy, data use, and contact via phone, text or WhatsApp,
+            despite any DNC/NDNC listing.
+          </label>
+
           <Button
             type="submit"
-            className="w-full bg-gradient-gold text-white font-semibold rounded-full py-6 hover:scale-105 transition-transform shadow-luxury"
-            size="lg"
+            className="w-full bg-gradient-to-r from-[#d4af37] to-[#7a5a2f] text-white font-semibold text-[16px] tracking-wide py-3 mt-3 rounded-md shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
           >
             <Send className="mr-2 h-5 w-5" />
-            Submit Enquiry
+            SUBMIT NOW
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center mt-4">
+          <p className="text-[10px] text-gray-500 text-center mt-4">
             By submitting, you agree to be contacted regarding this property.
           </p>
         </form>
       </div>
-    </section>
+    </div>
   );
 };
 

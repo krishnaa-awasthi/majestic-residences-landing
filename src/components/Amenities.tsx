@@ -1,57 +1,87 @@
-import { Card } from "@/components/ui/card";
-import {
-  Waves,
-  Dumbbell,
-  FootprintsIcon,
-  Baby,
-  ShieldCheck,
-  Trees,
-  Trophy,
-  Car,
-} from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Amenities = () => {
   const amenities = [
-    { icon: Waves, name: "Swimming Pool", description: "Resort-style infinity pool" },
-    { icon: Dumbbell, name: "Fitness Center", description: "State-of-the-art gym" },
-    { icon: FootprintsIcon, name: "Jogging Track", description: "Landscaped walking paths" },
-    { icon: Baby, name: "Kids Play Area", description: "Safe & engaging playground" },
-    { icon: ShieldCheck, name: "24/7 Security", description: "CCTV & trained personnel" },
-    { icon: Trees, name: "Landscaped Gardens", description: "Lush green spaces" },
-    { icon: Trophy, name: "Clubhouse", description: "Premium social facilities" },
-    { icon: Car, name: "Covered Parking", description: "Multi-level secure parking" },
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Jogging-Track.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Cycling-Track.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/GYM.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Outdoor-Game-Area.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Jacuzzi.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Admin-Office.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Pet-Park.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Barbeque-Pit.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Amphitheatre.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Outdoor-Party-Area.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Reflexology-Pathway.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Senior-Citizen-Park.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Chess-Plaza.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Yoga-And-Meditation-Deck.svg",
+    "https://www.godrejperoperties.in/Majesty/assets/img/amenities/Pedestrian-Walkway.svg",
+  ];
+
+  const [startIndex, setStartIndex] = useState(0);
+  const itemsPerPage = 5;
+
+  const nextSlide = () => {
+    setStartIndex((prev) => (prev + itemsPerPage) % amenities.length);
+  };
+
+  const prevSlide = () => {
+    setStartIndex(
+      (prev) => (prev - itemsPerPage + amenities.length) % amenities.length
+    );
+  };
+
+  const visibleAmenities = [
+    ...amenities.slice(startIndex, startIndex + itemsPerPage),
+    ...(startIndex + itemsPerPage > amenities.length
+      ? amenities.slice(0, (startIndex + itemsPerPage) % amenities.length)
+      : []),
   ];
 
   return (
-    <section id="amenities" className="py-20 bg-muted/30">
+    <section
+      id="amenities"
+      className="py-16 relative overflow-hidden"
+      style={{ backgroundColor: "#f5efea" }}
+    >
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-4">
-            World-Class Amenities
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Every detail designed to elevate your lifestyle and comfort
-          </p>
-        </div>
+        <div className="relative flex items-center justify-center">
+          
+          {/* Left Button */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 z-10 bg-white shadow-md rounded-full p-3 hover:bg-gold hover:text-white transition-all"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {amenities.map((amenity, index) => {
-            const Icon = amenity.icon;
-            return (
-              <Card
-                key={index}
-                className="p-6 text-center hover:shadow-card transition-all duration-300 hover:-translate-y-1 bg-card border-border/50 group"
-              >
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 group-hover:bg-accent mb-4 transition-colors">
-                  <Icon className="h-7 w-7 text-accent group-hover:text-accent-foreground transition-colors" />
+          {/* Image Container */}
+          <div className="overflow-hidden w-full max-w-6xl">
+            <div className="flex transition-transform duration-500 ease-in-out">
+              {visibleAmenities.map((src, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-1/5 px-3 flex justify-center items-center"
+                >
+                  <img
+                    src={src}
+                    alt={`Amenity ${index}`}
+                    className="w-32 h-32 object-contain"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold text-charcoal mb-2">
-                  {amenity.name}
-                </h3>
-                <p className="text-sm text-muted-foreground">{amenity.description}</p>
-              </Card>
-            );
-          })}
+              ))}
+            </div>
+          </div>
+
+          {/* Right Button */}
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 z-10 bg-white shadow-md rounded-full p-3 hover:bg-gold hover:text-white transition-all"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </section>

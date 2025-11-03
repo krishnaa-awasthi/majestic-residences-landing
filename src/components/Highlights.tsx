@@ -1,62 +1,45 @@
-import { Building2, Trees, Award, ShieldCheck } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Highlights = () => {
-  const highlights = [
-    {
-      icon: Building2,
-      title: "Neoclassical Design",
-      description: "Timeless architecture with modern amenities",
-    },
-    {
-      icon: Trees,
-      title: "4.5 Acres Landscaped Greens",
-      description: "Expansive gardens and open spaces",
-    },
-    {
-      icon: Award,
-      title: "Exclusive Clubhouse & Pool",
-      description: "World-class recreational facilities",
-    },
-    {
-      icon: ShieldCheck,
-      title: "RERA Registered Project",
-      description: "Transparent and trustworthy development",
-    },
-  ];
-
   return (
     <section id="highlights" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-4">
-            Experience Timeless Luxury
+            Overview
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Majestic Residences brings together architectural grandeur and
-            contemporary living standards, offering an unparalleled lifestyle in
-            the heart of the city.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-10">
+            Experience the epitome of luxury living at Godrej Majesty, where every detail is crafted to perfection. 
+            Nestled in the prime Sector 12 of Greater Noida West, these exquisite 3 & 4 BHK residences redefine 
+            urban living with their sophisticated design and impeccable craftsmanship.
+            <br /><br />
+            Spread across a meticulously planned development, Godrej Majesty offers spacious apartments that 
+            blend contemporary aesthetics with functional design. Each residence is thoughtfully designed to 
+            provide ample natural light, ventilation, and views of the surrounding greenery, creating a perfect 
+            harmony between indoor and outdoor living.
           </p>
+
+          {/* Centered Video Section */}
+          <div className="flex justify-center mb-12">
+            <video
+              src="https://www.godrejperoperties.in/Majesty/video.mp4" // <-- change this to your actual video path
+              controls
+              autoPlay
+              muted
+              loop
+              className="rounded-2xl shadow-2xl border border-gray-300 w-full md:w-3/4 lg:w-2/3 transition-transform duration-500 hover:scale-[1.02]"
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {highlights.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <Card
-                key={index}
-                className="p-8 text-center hover:shadow-luxury transition-all duration-300 hover:-translate-y-2 bg-card border-border/50"
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-gold mb-6">
-                  <Icon className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-charcoal mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground">{item.description}</p>
-              </Card>
-            );
-          })}
+        {/* Centered Download Button */}
+        <div className="text-center mt-10">
+          <Button
+            className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white text-lg px-8 py-6 rounded-full shadow-lg hover:scale-105 transition-transform duration-300"
+            onClick={() => window.open('/brochure.pdf', '_blank')}
+          >
+            Download Brochure
+          </Button>
         </div>
       </div>
     </section>

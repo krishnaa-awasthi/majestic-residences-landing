@@ -1,19 +1,17 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-import gallery1 from "@/assets/gallery-1.jpg";
-import gallery2 from "@/assets/gallery-2.jpg";
-import gallery3 from "@/assets/gallery-3.jpg";
-import gallery4 from "@/assets/gallery-4.jpg";
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const images = [
-    { src: gallery1, alt: "Luxury Interior" },
-    { src: gallery2, alt: "Swimming Pool" },
-    { src: gallery3, alt: "Clubhouse" },
-    { src: gallery4, alt: "Landscaped Gardens" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g1.jpg", alt: "Luxury Interior" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g2.jpg", alt: "Swimming Pool" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g3.jpg", alt: "Clubhouse" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g4.jpg", alt: "Landscaped Gardens" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g5.jpg", alt: "Fitness Center" },
+    { src: "https://www.godrejperoperties.in/Majesty/assets/img/g6.webp", alt: "Fitness Center" },
   ];
 
   return (
@@ -28,11 +26,12 @@ const Gallery = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        {/* ✅ Three images per row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative aspect-[4/3] overflow-hidden rounded-lg cursor-pointer group"
+              className="relative overflow-hidden rounded-lg cursor-pointer group h-64"
               onClick={() => setSelectedImage(image.src)}
             >
               <img

@@ -29,7 +29,6 @@ const Navbar = () => {
     { label: "Floor Plans", href: "unit-plans" },
     { label: "Gallery", href: "gallery" },
     { label: "Location", href: "location" },
-    { label: "Contact", href: "enquiry" },
   ];
 
   return (
@@ -37,17 +36,19 @@ const Navbar = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-card"
-          : "bg-transparent"
+          ? "bg-white shadow-card"
+          : "bg-white" // 👈 replaced transparent with solid white
       )}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-charcoal">
-              Majestic <span className="text-gold">Residences</span>
-            </h1>
+            <img
+              src="https://www.godrejperoperties.in/Majesty/assets/img/comman/logo-1.png"
+              alt="Majestic Residences Logo"
+              className="h-8 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}
@@ -62,7 +63,7 @@ const Navbar = () => {
               </button>
             ))}
             <Button
-              onClick={() => scrollToSection("enquiry")}
+              onClick={() => scrollToSection("")}
               className="bg-gradient-gold text-white font-semibold rounded-full px-6 hover:scale-105 transition-transform"
             >
               Enquire Now
@@ -85,7 +86,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-background border-t border-border">
+        <div className="lg:hidden bg-white border-t border-border">
           <div className="container mx-auto px-4 py-6 space-y-4">
             {navLinks.map((link) => (
               <button
