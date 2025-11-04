@@ -2,7 +2,19 @@ import React from "react";
 
 export const PropertyCard: React.FC = () => {
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-xl border border-[#E6D9C5]">
+    <div className="
+        w-full 
+        max-w-sm 
+        mx-auto 
+        bg-white 
+        rounded-2xl 
+        overflow-hidden 
+        shadow-2xl 
+        border border-[#E6D9C5] 
+        my-8 lg:my-12          
+        max-h-[50vh]           
+        overflow-y-auto         
+      ">
       {/* Header */}
       <div className="bg-white pt-6 pb-4 px-6 border-t-4 border-[#8B6F47]">
         <h1

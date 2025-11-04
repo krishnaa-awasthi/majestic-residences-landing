@@ -1,21 +1,45 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { Send, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-const EnquiryForm = () => {
+interface EnquiryFormProps {
+  open?: boolean; // External trigger from Navbar
+  onClose?: () => void;
+}
+
+const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
   const { toast } = useToast();
-  const [showPopup, setShowPopup] = useState(true);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-  });
+  const [showPopup, setShowPopup] = useState(false);
+  const [formData, setFormData] = useState({ name: "", phone: "" });
 
+  // ✅ Auto open on first visit (1.5s delay)
+  useEffect(() => {
+    const hasShown = sessionStorage.getItem("popupShown");
+    if (!hasShown) {
+      const timer = setTimeout(() => {
+        setShowPopup(true);
+        sessionStorage.setItem("popupShown", "true");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  // ✅ Respond to Navbar button trigger
+  useEffect(() => {
+    if (open) setShowPopup(true);
+  }, [open]);
+
+  // ✅ Lock scroll when popup open
   useEffect(() => {
     document.body.style.overflow = showPopup ? "hidden" : "auto";
   }, [showPopup]);
+
+  const handleClose = () => {
+    setShowPopup(false);
+    onClose?.();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,30 +54,37 @@ const EnquiryForm = () => {
     }
 
     console.log("Form submitted:", formData);
-
     toast({
       title: "Enquiry Submitted!",
       description: "Thank you for your interest. Our team will contact you soon.",
     });
 
     setFormData({ name: "", phone: "" });
-    setShowPopup(false);
+    handleClose();
   };
 
   if (!showPopup) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="relative bg-[#f8f1e7] rounded-2xl shadow-2xl w-full max-w-lg p-8 md:p-10 text-center animate-fade-in border border-[#d4af37]/40">
+      <div
+        className="
+          relative bg-[#f8f1e7] rounded-2xl shadow-2xl 
+          w-full max-w-lg p-8 md:p-10 text-center 
+          border border-[#d4af37]/40 
+          transform transition-all duration-500 ease-out 
+          animate-[fadeSlideUp_0.4s_ease-out]
+        "
+      >
         {/* Close Button */}
         <button
-          onClick={() => setShowPopup(false)}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
         >
           <X className="h-6 w-6" />
         </button>
 
-        {/* Header Section */}
+        {/* Header */}
         <div className="flex flex-col items-center justify-center mb-8">
           <img
             src="https://www.godrejperoperties.in/Majesty/assets/img/comman/logo-1.png"
@@ -74,31 +105,26 @@ const EnquiryForm = () => {
           </p>
         </div>
 
-        {/* Form Section */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Name*"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
-            />
-          </div>
-
-          <div>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="Phone Number*"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-              className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
-            />
-          </div>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Name*"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+            className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
+          />
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="Phone Number*"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            required
+            className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
+          />
 
           <label className="text-[10px] text-gray-600 flex items-start gap-1 mt-1">
             <input type="checkbox" className="mt-[3px]" required />
