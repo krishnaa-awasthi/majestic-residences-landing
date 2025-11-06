@@ -14,19 +14,15 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
 
-  // ✅ Auto open on first visit (1.5s delay)
+  // ✅ Show popup 1.5s after page load (only once)
   useEffect(() => {
-    const hasShown = sessionStorage.getItem("popupShown");
-    if (!hasShown) {
-      const timer = setTimeout(() => {
-        setShowPopup(true);
-        sessionStorage.setItem("popupShown", "true");
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
-  // ✅ Respond to Navbar button trigger
+  // ✅ Respond to Navbar trigger (open manually)
   useEffect(() => {
     if (open) setShowPopup(true);
   }, [open]);
@@ -78,6 +74,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
       >
         {/* Close Button */}
         <button
+          type="button"
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
         >

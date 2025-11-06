@@ -122,7 +122,7 @@ export const PropertyCard: React.FC = () => {
             style={{ fontSize: "14px", fontWeight: 700 }}
           >
             GET MORE DETAILS
-          </span>
+          </span>   
         </button>
       </div>
     </div>
