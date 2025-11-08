@@ -15,14 +15,14 @@ const Hero = () => {
     "https://www.godrejperoperties.in/Majesty/assets/img/main-bg-4-new.jpg",
   ];
 
-  // ✅ Tab Focus Trigger
+  // ✅ Auto-open on tab focus
   useEffect(() => {
     const handleFocus = () => setShowEnquiry(true);
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
-  // ✅ Background Slideshow
+  // ✅ Slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -32,12 +32,12 @@ const Hero = () => {
 
   const whatsappNumber = "919354478720";
   const whatsappMessage = encodeURIComponent(
-    "Hello, I’m interested in Godrej Majesty. Please share more details!"
+    "Hello! I’m interested in Godrej Majesty. Please share more details."
   );
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
-    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+    <section className="relative w-full min-h-screen overflow-hidden flex flex-col items-center justify-center">
       {/* Background Slideshow */}
       <div className="absolute inset-0">
         <AnimatePresence>
@@ -62,11 +62,11 @@ const Hero = () => {
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/45 lg:bg-black/35 z-10" />
 
-      {/* Main Content */}
-      <div className="relative z-20 container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center justify-between h-full">
+      {/* Content */}
+      <div className="relative z-20 container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center justify-between py-10">
         {/* LEFT SIDE */}
         <motion.div
-          className="text-white text-center lg:text-left max-w-lg mt-20 lg:mt-0"
+          className="text-white text-center lg:text-left max-w-lg mt-10 lg:mt-0"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.8 }}
@@ -101,15 +101,15 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE — CALL BACK CARD */}
+        {/* RIGHT SIDE — CALL BACK CARD (now visible on mobile too) */}
         <motion.div
-          className="hidden lg:flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 w-[360px] text-center overflow-hidden"
+          className="mt-10 lg:mt-0 flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 w-full max-w-md lg:w-[360px] text-center overflow-hidden"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 1 }}
         >
           {/* WhatsApp Top Bar */}
-          <div className="flex justify-between items-center bg-[#7a5a2f] text-white px-4 py-2 font-semibold">
+          <div className="flex justify-between items-center bg-[#7a5a2f] text-white px-4 py-2 font-semibold text-sm md:text-base">
             <a
               href={whatsappLink}
               target="_blank"
@@ -122,7 +122,7 @@ const Hero = () => {
             <span>{whatsappNumber.slice(2, 12)}</span>
           </div>
 
-          {/* Form Section */}
+          {/* Form */}
           <div className="p-6">
             <h3 className="text-[22px] font-bold text-[#5E3D22] mb-5">
               REQUEST A CALL BACK!
@@ -146,7 +146,6 @@ const Hero = () => {
                 required
                 className="w-full border-b border-gray-300 focus:border-[#7a5a2f] focus:outline-none py-2 text-sm"
               />
-
               <label className="flex items-start text-[10px] text-gray-600 gap-1">
                 <input type="checkbox" className="mt-[3px]" required />
                 I consent to the privacy policy, data use, and contact via
@@ -173,7 +172,7 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      {/* MOBILE FOOTER BUTTONS */} 
+      {/* Bottom Bar (Mobile Quick Actions) */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 flex justify-around bg-[#5E3D22] text-white py-3 z-50">
         <button
           onClick={() => setShowEnquiry(true)}
@@ -195,7 +194,7 @@ const Hero = () => {
         </button>
       </div>
 
-      {/* POPUP FORM */}
+      {/* Enquiry Popup */}
       {showEnquiry && (
         <EnquiryForm open={showEnquiry} onClose={() => setShowEnquiry(false)} />
       )}
