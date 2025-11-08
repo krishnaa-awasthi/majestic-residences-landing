@@ -135,10 +135,14 @@ const Hero = () => {
 
       {/* ---------- Mobile Bottom Buttons ---------- */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 flex justify-around bg-[#5E3D22] text-white py-3 z-50">
-        <button className="flex flex-col items-center text-xs">
+        <button
+         onClick={() => setShowEnquiry(true)}
+         className="flex flex-col items-center text-xs">
           📞 <span>Call</span>
         </button>
-        <button className="flex flex-col items-center text-xs">
+        <button 
+        onClick={() => setShowEnquiry(true)}
+        className="flex flex-col items-center text-xs">
           💬 <span>WhatsApp</span>
         </button>
         <button
