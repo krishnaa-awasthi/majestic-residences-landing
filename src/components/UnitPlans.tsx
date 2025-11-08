@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import EnquiryForm from "@/components/EnquiryForm"; // ✅ Import your form
 
 interface UnitPlan {
   type: string;
@@ -12,6 +12,7 @@ interface UnitPlan {
 
 const UnitPlans = () => {
   const [selectedPlan, setSelectedPlan] = useState<UnitPlan | null>(null);
+  const [showEnquiry, setShowEnquiry] = useState(false);
 
   const units: UnitPlan[] = [
     {
@@ -81,7 +82,10 @@ const UnitPlans = () => {
 
               <div className="bg-gradient-to-r from-[#C7A456] to-[#B18B30] text-center py-3">
                 <Button
-                  onClick={() => setSelectedPlan(unit)}
+                  onClick={() => {
+                    setSelectedPlan(unit);
+                    setShowEnquiry(true);
+                  }}
                   className="text-white text-sm tracking-widest font-semibold bg-transparent hover:bg-[#C7A456]/90"
                 >
                   ENQUIRE NOW
@@ -92,25 +96,13 @@ const UnitPlans = () => {
         </div>
       </div>
 
-      {/* Floor Plan Modal */}
-      <Dialog open={!!selectedPlan} onOpenChange={() => setSelectedPlan(null)}>
-        <DialogContent className="max-w-4xl bg-white rounded-xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-[#5E3D22] text-center">
-              {selectedPlan?.type} Floor Plan
-            </DialogTitle>
-          </DialogHeader>
-          {selectedPlan && (
-            <div className="mt-4">
-              <img
-                src={selectedPlan.image}
-                alt={selectedPlan.type}
-                className="w-full h-auto rounded-lg"
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* ✅ Enquiry Form Triggered Externally */}
+      {showEnquiry && (
+        <EnquiryForm
+          open={showEnquiry}
+          onClose={() => setShowEnquiry(false)}
+        />
+      )}
     </section>
   );
 };
