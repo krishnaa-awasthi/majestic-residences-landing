@@ -9,20 +9,33 @@ import { MessageCircle } from "lucide-react";
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
+  const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
 
   const images = [
     "https://www.godrejperoperties.in/Majesty/assets/img/banner1.jpg",
     "https://www.godrejperoperties.in/Majesty/assets/img/main-bg-4-new.jpg",
   ];
 
-  // ✅ Auto-open on tab focus
+  // ✅ Auto-open after 1.5 seconds (only once on first page load)
   useEffect(() => {
-    const handleFocus = () => setShowEnquiry(true);
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
+    const timer = setTimeout(() => {
+      setShowEnquiry(true);
+      setHasOpenedOnce(true);
+    }, 800);
+    return () => clearTimeout(timer);
   }, []);
 
-  // ✅ Slideshow
+  // ✅ Open again whenever tab gains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      // prevent immediate repeat if form just opened on load
+      if (!showEnquiry && hasOpenedOnce) setShowEnquiry(true);
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [showEnquiry, hasOpenedOnce]);
+
+  // ✅ Background Slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -62,7 +75,7 @@ const Hero = () => {
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/45 lg:bg-black/35 z-10" />
 
-      {/* Content */}
+      {/* Main Content */}
       <div className="relative z-20 container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center justify-between py-10">
         {/* LEFT SIDE */}
         <motion.div
@@ -101,7 +114,7 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE — CALL BACK CARD (now visible on mobile too) */}
+        {/* RIGHT SIDE — Request Callback Card */}
         <motion.div
           className="mt-10 lg:mt-0 flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 w-full max-w-md lg:w-[360px] text-center overflow-hidden"
           initial={{ opacity: 0, x: 50 }}
@@ -122,7 +135,7 @@ const Hero = () => {
             <span>{whatsappNumber.slice(2, 12)}</span>
           </div>
 
-          {/* Form */}
+          {/* Form Section */}
           <div className="p-6">
             <h3 className="text-[22px] font-bold text-[#5E3D22] mb-5">
               REQUEST A CALL BACK!
@@ -146,6 +159,7 @@ const Hero = () => {
                 required
                 className="w-full border-b border-gray-300 focus:border-[#7a5a2f] focus:outline-none py-2 text-sm"
               />
+
               <label className="flex items-start text-[10px] text-gray-600 gap-1">
                 <input type="checkbox" className="mt-[3px]" required />
                 I consent to the privacy policy, data use, and contact via
@@ -172,7 +186,7 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      {/* Bottom Bar (Mobile Quick Actions) */}
+      {/* Mobile Quick Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 flex justify-around bg-[#5E3D22] text-white py-3 z-50">
         <button
           onClick={() => setShowEnquiry(true)}
@@ -194,7 +208,7 @@ const Hero = () => {
         </button>
       </div>
 
-      {/* Enquiry Popup */}
+      {/* Popup Enquiry Form */}
       {showEnquiry && (
         <EnquiryForm open={showEnquiry} onClose={() => setShowEnquiry(false)} />
       )}
