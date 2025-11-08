@@ -1,76 +1,74 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface EnquiryFormProps {
-  open?: boolean; // External trigger from Navbar
+  open?: boolean; // External trigger from parent (Navbar, Hero, etc.)
   onClose?: () => void;
 }
 
 const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
   const { toast } = useToast();
-  const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [submitting, setSubmitting] = useState(false);
 
-  // ✅ Show popup 1.5s after page load (only once)
+  // ✅ Lock scroll when popup is open
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPopup(true);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // ✅ Respond to Navbar trigger (open manually)
-  useEffect(() => {
-    if (open) setShowPopup(true);
+    document.body.style.overflow = open ? "hidden" : "auto";
   }, [open]);
 
-  // ✅ Lock scroll when popup open
-  useEffect(() => {
-    document.body.style.overflow = showPopup ? "hidden" : "auto";
-  }, [showPopup]);
-
+  // ✅ Close handler
   const handleClose = () => {
-    setShowPopup(false);
     onClose?.();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ✅ Submit handler
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation
     if (!formData.name || !formData.phone) {
       toast({
         title: "Required fields missing",
-        description: "Please fill in all required fields.",
+        description: "Please fill in both name and phone number.",
         variant: "destructive",
       });
       return;
     }
 
-    console.log("Form submitted:", formData);
+    setSubmitting(true);
+
+    // Simulate network request delay (you can remove if sending real data)
+    await new Promise((res) => setTimeout(res, 800));
+
+    // ✅ Success Toast
     toast({
-      title: "Enquiry Submitted!",
-      description: "Thank you for your interest. Our team will contact you soon.",
+      title: "Thank you for your interest!",
+      description: "We’ll be contacting you shortly regarding your enquiry.",
+      variant: "default",
     });
 
+    // Reset form & close popup
     setFormData({ name: "", phone: "" });
+    setSubmitting(false);
     handleClose();
   };
 
-  if (!showPopup) return null;
+  // ✅ Hide component when not open
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div
-        className="
-          relative bg-[#f8f1e7] rounded-2xl shadow-2xl 
+        className="relative bg-[#f8f1e7] rounded-2xl shadow-2xl 
           w-full max-w-lg p-8 md:p-10 text-center 
           border border-[#d4af37]/40 
           transform transition-all duration-500 ease-out 
-          animate-[fadeSlideUp_0.4s_ease-out]
-        "
+          animate-[fadeSlideUp_0.4s_ease-out]"
       >
         {/* Close Button */}
         <button
@@ -111,6 +109,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
+            disabled={submitting}
             className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
           />
           <Input
@@ -120,6 +119,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
+            disabled={submitting}
             className="rounded-md py-3 border-gray-300 focus:ring-2 focus:ring-[#7a5a2f] transition"
           />
 
@@ -131,10 +131,19 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ open = false, onClose }) => {
 
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#d4af37] to-[#7a5a2f] text-white font-semibold text-[16px] tracking-wide py-3 mt-3 rounded-md shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+            disabled={submitting}
+            className={`w-full bg-gradient-to-r from-[#d4af37] to-[#7a5a2f] text-white font-semibold text-[16px] tracking-wide py-3 mt-3 rounded-md shadow-md hover:shadow-lg transition-all duration-300 ${
+              submitting ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+            }`}
           >
-            <Send className="mr-2 h-5 w-5" />
-            SUBMIT NOW
+            {submitting ? (
+              "Submitting..."
+            ) : (
+              <>
+                <Send className="mr-2 h-5 w-5" />
+                SUBMIT NOW
+              </>
+            )}
           </Button>
 
           <p className="text-[10px] text-gray-500 text-center mt-4">

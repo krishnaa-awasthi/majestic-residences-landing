@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import EnquiryForm from "@/components/EnquiryForm"; // ✅ import your existing popup form
+import EnquiryForm from "@/components/EnquiryForm";
+import { MessageCircle } from "lucide-react";
 
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -14,6 +15,14 @@ const Hero = () => {
     "https://www.godrejperoperties.in/Majesty/assets/img/main-bg-4-new.jpg",
   ];
 
+  // ✅ Tab Focus Trigger
+  useEffect(() => {
+    const handleFocus = () => setShowEnquiry(true);
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
+
+  // ✅ Background Slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
@@ -21,9 +30,15 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const whatsappNumber = "919354478720";
+  const whatsappMessage = encodeURIComponent(
+    "Hello, I’m interested in Godrej Majesty. Please share more details!"
+  );
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
   return (
     <section className="relative w-full h-screen overflow-hidden flex items-center justify-center">
-      {/* ---------- Background Slideshow ---------- */}
+      {/* Background Slideshow */}
       <div className="absolute inset-0">
         <AnimatePresence>
           {images.map(
@@ -44,12 +59,12 @@ const Hero = () => {
         </AnimatePresence>
       </div>
 
-      {/* ---------- Overlay ---------- */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/45 lg:bg-black/35 z-10" />
 
-      {/* ---------- Main Content ---------- */}
+      {/* Main Content */}
       <div className="relative z-20 container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center justify-between h-full">
-        {/* LEFT: Text Section */}
+        {/* LEFT SIDE */}
         <motion.div
           className="text-white text-center lg:text-left max-w-lg mt-20 lg:mt-0"
           initial={{ opacity: 0, y: 40 }}
@@ -70,7 +85,7 @@ const Hero = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button
-              onClick={() => window.open("/brochure.pdf", "_blank")}
+              onClick={() => setShowEnquiry(true)}
               className="relative overflow-hidden text-white font-semibold text-lg px-8 py-3 rounded-full shadow-[0_0_25px_rgba(212,175,55,0.35)] hover:scale-105 active:scale-95 transition-all duration-300"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-[#d4af37] via-[#f5d76e] to-[#b8860b] bg-[length:200%_200%] animate-gradientMove rounded-full"></span>
@@ -86,63 +101,90 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* RIGHT: Desktop Enquiry Box */}
+        {/* RIGHT SIDE — CALL BACK CARD */}
         <motion.div
-          className="hidden lg:flex flex-col bg-[#fff7ec]/95 rounded-2xl shadow-2xl p-8 w-[380px] text-center"
+          className="hidden lg:flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 w-[360px] text-center overflow-hidden"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 1 }}
         >
-          <h2 className="text-2xl font-bold text-[#5E3D22] mb-1">
-            REQUEST A CALL BACK!
-          </h2>
-          <p className="text-sm text-[#7C5E3B] mb-5">
-            Fill in your details and our team will get in touch.
-          </p>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Form submitted!");
-            }}
-            className="space-y-4"
-          >
-            <input
-              type="text"
-              placeholder="Name*"
-              required
-              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#b38b2b]"
-            />
-            <input
-              type="tel"
-              placeholder="Mobile No*"
-              required
-              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#b38b2b]"
-            />
-            <label className="text-[10px] text-gray-600 flex items-start gap-1">
-              <input type="checkbox" className="mt-[3px]" required />
-              I consent to the privacy policy, data use, and contact via phone, text or WhatsApp.
-            </label>
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-[#d4af37] to-[#7a5a2f] text-white font-semibold text-[16px] tracking-wide py-3 mt-3 rounded-md shadow-md hover:scale-105"
+          {/* WhatsApp Top Bar */}
+          <div className="flex justify-between items-center bg-[#7a5a2f] text-white px-4 py-2 font-semibold">
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-green-300"
             >
-              SUBMIT NOW
-            </Button>
-          </form>
+              <MessageCircle className="h-5 w-5 text-[#25D366]" />
+              Whatsapp Now
+            </a>
+            <span>{whatsappNumber.slice(2, 12)}</span>
+          </div>
+
+          {/* Form Section */}
+          <div className="p-6">
+            <h3 className="text-[22px] font-bold text-[#5E3D22] mb-5">
+              REQUEST A CALL BACK!
+            </h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setShowEnquiry(true);
+              }}
+              className="space-y-4"
+            >
+              <input
+                type="text"
+                placeholder="Name"
+                required
+                className="w-full border-b border-gray-300 focus:border-[#7a5a2f] focus:outline-none py-2 text-sm"
+              />
+              <input
+                type="tel"
+                placeholder="Mobile No"
+                required
+                className="w-full border-b border-gray-300 focus:border-[#7a5a2f] focus:outline-none py-2 text-sm"
+              />
+
+              <label className="flex items-start text-[10px] text-gray-600 gap-1">
+                <input type="checkbox" className="mt-[3px]" required />
+                I consent to the privacy policy, data use, and contact via
+                phone, text or WhatsApp, despite any DNC/NDNC listing.
+              </label>
+
+              <Button
+                type="submit"
+                className="w-full bg-[#7a5a2f] hover:bg-[#5E3D22] text-white font-semibold text-sm tracking-wide py-3 rounded-md mt-3 shadow-md transition"
+              >
+                SUBMIT NOW
+              </Button>
+            </form>
+          </div>
+
+          {/* Brochure Image */}
+          <div className="border-t border-gray-200">
+            <img
+              src="https://www.godrejperoperties.in/Majesty/assets/img/investo-gold-offer-MOB.jpg"
+              alt="Brochure Preview"
+              className="w-full h-[200px] object-cover"
+            />
+          </div>
         </motion.div>
       </div>
 
-      {/* ---------- Mobile Bottom Buttons ---------- */}
+      {/* MOBILE FOOTER BUTTONS */} 
       <div className="lg:hidden fixed bottom-0 left-0 right-0 flex justify-around bg-[#5E3D22] text-white py-3 z-50">
         <button
-         onClick={() => setShowEnquiry(true)}
-         className="flex flex-col items-center text-xs">
+          onClick={() => setShowEnquiry(true)}
+          className="flex flex-col items-center text-xs"
+        >
           📞 <span>Call</span>
         </button>
-        <button 
-        onClick={() => setShowEnquiry(true)}
-        className="flex flex-col items-center text-xs">
+        <button
+          onClick={() => setShowEnquiry(true)}
+          className="flex flex-col items-center text-xs"
+        >
           💬 <span>WhatsApp</span>
         </button>
         <button
@@ -153,7 +195,7 @@ const Hero = () => {
         </button>
       </div>
 
-      {/* ✅ Popup Enquiry Form */}
+      {/* POPUP FORM */}
       {showEnquiry && (
         <EnquiryForm open={showEnquiry} onClose={() => setShowEnquiry(false)} />
       )}
